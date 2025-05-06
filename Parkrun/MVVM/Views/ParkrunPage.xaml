@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Parkrun.MVVM.ViewModels"
+             x:Class="Parkrun.MVVM.Views.ParkrunPage"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             Title="ParkrunPage">
+    <VerticalStackLayout>
+        <Label 
+            Text="Welcome to the Parkrun App!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+
+        <DatePicker Date="{Binding SelectedDate}" />
+        <StackLayout Orientation="Horizontal">
+            <Picker Title="Stunde" ItemsSource="{Binding Hours}" SelectedItem="{Binding SelectedHour}" />
+            <Picker Title="Minute" ItemsSource="{Binding Minutes}" SelectedItem="{Binding SelectedMinute}" />
+            <Picker Title="Sekunde" ItemsSource="{Binding Seconds}" SelectedItem="{Binding SelectedSecond}" />
+        </StackLayout>
+        
+        <Button Text="Ergebnis hinzufügen" Command="{Binding AddResultCommand}" />
+
+        <CollectionView ItemsSource="{Binding Results}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="*,*,Auto">
+                        <Label Text="{Binding Date}" Grid.Column="0" />
+                        <Label Text="{Binding Time}" Grid.Column="1" />
+                        <Button Text="✖" Command="{Binding Source={RelativeSource AncestorType={x:Type local:ParkrunViewModel}}, Path=RemoveResultCommand}" CommandParameter="{Binding}" Grid.Column="2"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+        <microcharts:ChartView Chart="{Binding LineChart}" HeightRequest="200"/>
+    </VerticalStackLayout>
+</ContentPage>
