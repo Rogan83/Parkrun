@@ -20,17 +20,20 @@
 
         <Button Text="Ergebnis hinzufügen" Command="{Binding AddDataCommand}" Margin="20,0,20,20"/>
 
-        <CollectionView ItemsSource="{Binding Data}" Margin="0,0,0,20">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid ColumnDefinitions="*,*,Auto">
-                        <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="0" Margin="10" />
-                        <Label Text="{Binding Time}" Grid.Column="1" Margin="10"/>
-                        <Button Text="✖" Command="{Binding Source={RelativeSource AncestorType={x:Type local:ParkrunViewModel}}, Path=RemoveDataCommand}" CommandParameter="{Binding}" Grid.Column="2" Margin="10"/>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <ScrollView HeightRequest="300">
+            <CollectionView ItemsSource="{Binding Data}" Margin="0,0,0,20">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,*,Auto">
+                            <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="0" Margin="10" />
+                            <Label Text="{Binding Time}" Grid.Column="1" Margin="10"/>
+                            <Button Text="✖" Command="{Binding Source={RelativeSource AncestorType={x:Type local:ParkrunViewModel}}, Path=RemoveDataCommand}" CommandParameter="{Binding}" Grid.Column="2" Margin="10"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+
 
         <microcharts:ChartView Chart="{Binding LineChart}" HeightRequest="200"/>
     </VerticalStackLayout>

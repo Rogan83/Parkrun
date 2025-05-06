@@ -132,13 +132,33 @@ namespace Parkrun.MVVM.ViewModels
                 Data = new ObservableCollection<ParkrunData>(Data.OrderBy(d => d.Date));
 
                 var maxTime = Data.Max(d => d.Time.TotalSeconds); // Höchster Wert bestimmen
+                var minTime = Data.Min(d => d.Time.TotalSeconds); // Niedrigsten Wert bestimmen
                 entries = Data.Select((result, index) =>
-                    new ChartEntry((float)(maxTime - result.Time.TotalSeconds))
+                {
+                    float calculatedValue = (float)(maxTime - result.Time.TotalSeconds);
+
+                    // Falls die Zeit die Bestzeit erreicht hat, dann wird diese anders eingefärbt
+                    SKColor color;
+                    if (result.Time.TotalSeconds == minTime)
+                    {
+                        color = SKColor.Parse("#2ecc71"); // Grün für die Bestzeit
+                    }
+                    else if (result.Time.TotalSeconds == maxTime)
+                    {
+                        color = SKColor.Parse("#e74c3c"); // Rot für die langsamste Zeit
+                    }
+                    else
+                    {
+                        color = SKColor.Parse("#f1c40f"); // Gelb für normale Zeiten
+                    }
+
+                    return new ChartEntry(calculatedValue)
                     {
                         Label = result.Date.ToShortDateString(),
                         ValueLabel = $"{result.Time}",
-                        Color = SKColor.Parse("#3498db") // Blaue Farbe für die Linie
-                    }).ToList();
+                        Color = color // Dynamische Farbänderung basierend auf der Bedingung
+                    };
+                }).ToList();
             }
 
             #region TestData
