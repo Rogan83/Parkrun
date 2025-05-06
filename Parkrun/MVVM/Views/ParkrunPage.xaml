@@ -11,27 +11,26 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
-        <DatePicker Date="{Binding SelectedDate}" />
-        <StackLayout Orientation="Horizontal">
+        <DatePicker Date="{Binding SelectedDate}" Margin="20,0,20,20"/>
+        <StackLayout Orientation="Horizontal" Margin="20,0,20,20">
             <Picker Title="Stunde" ItemsSource="{Binding Hours}" SelectedItem="{Binding SelectedHour}" />
             <Picker Title="Minute" ItemsSource="{Binding Minutes}" SelectedItem="{Binding SelectedMinute}" />
             <Picker Title="Sekunde" ItemsSource="{Binding Seconds}" SelectedItem="{Binding SelectedSecond}" />
         </StackLayout>
-        
-        <Button Text="Ergebnis hinzufügen" Command="{Binding AddResultCommand}" />
 
-        <CollectionView ItemsSource="{Binding Results}">
+        <Button Text="Ergebnis hinzufügen" Command="{Binding AddDataCommand}" Margin="20,0,20,20"/>
+
+        <CollectionView ItemsSource="{Binding Data}" Margin="0,0,0,20">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid ColumnDefinitions="*,*,Auto">
-                        <Label Text="{Binding Date}" Grid.Column="0" />
-                        <Label Text="{Binding Time}" Grid.Column="1" />
-                        <Button Text="✖" Command="{Binding Source={RelativeSource AncestorType={x:Type local:ParkrunViewModel}}, Path=RemoveResultCommand}" CommandParameter="{Binding}" Grid.Column="2"/>
+                        <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="0" Margin="10" />
+                        <Label Text="{Binding Time}" Grid.Column="1" Margin="10"/>
+                        <Button Text="✖" Command="{Binding Source={RelativeSource AncestorType={x:Type local:ParkrunViewModel}}, Path=RemoveDataCommand}" CommandParameter="{Binding}" Grid.Column="2" Margin="10"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
 
         <microcharts:ChartView Chart="{Binding LineChart}" HeightRequest="200"/>
     </VerticalStackLayout>

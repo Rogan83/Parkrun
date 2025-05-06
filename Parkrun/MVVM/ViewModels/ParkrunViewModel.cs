@@ -22,11 +22,11 @@ namespace Parkrun.MVVM.ViewModels
         #region Properties and Fields
         DatabaseService databaseService = new();
 
-        public ObservableCollection<ParkrunData> Results { get; set; } = new();
+        public ObservableCollection<ParkrunData> Data { get; set; } = new();
         private List<ParkrunData> pendingEntries = new();
         public Chart LineChart { get; private set; }
 
-        public DateTime SelectedDate { get; set; } = DateTime.Now;
+        public DateTime SelectedDate { get; set; } = DateTime.Now.Date;
 
         public List<int> Hours { get; } = Enumerable.Range(0, 24).ToList();
         public List<int> Minutes { get; } = Enumerable.Range(0, 60).ToList();
@@ -39,8 +39,8 @@ namespace Parkrun.MVVM.ViewModels
         public TimeSpan SelectedTime => new TimeSpan(SelectedHour, SelectedMinute, SelectedSecond);
 
 
-        public ICommand AddResultCommand { get; }
-        public ICommand RemoveResultCommand { get; }
+        public ICommand AddDataCommand { get; }
+        public ICommand RemoveDataCommand { get; }
 
 
         private bool isDataLoaded = false;
@@ -49,12 +49,12 @@ namespace Parkrun.MVVM.ViewModels
         public async Task LoadDataAsync()
         {
             isDataLoaded = false;
-            Results.Clear();
+            Data.Clear();
 
             var data = await databaseService.GetDataAsync();
             foreach (var item in data)
             {
-                Results.Add(item);
+                Data.Add(item);
             }
 
             isDataLoaded = true;
@@ -62,7 +62,7 @@ namespace Parkrun.MVVM.ViewModels
             // Jetzt füge die zwischengespeicherten neuen Einträge hinzu
             foreach (var pending in pendingEntries)
             {
-                Results.Add(pending);
+                Data.Add(pending);
             }
             pendingEntries.Clear(); // Warteschlange leeren
 
@@ -71,7 +71,7 @@ namespace Parkrun.MVVM.ViewModels
 
         public ParkrunViewModel()
         {
-            AddResultCommand = new Command( async () =>
+            AddDataCommand = new Command( async () =>
             {
                 Debug.WriteLine($"Neuer Eintrag: {SelectedDate} - {SelectedTime}");
 
@@ -81,21 +81,20 @@ namespace Parkrun.MVVM.ViewModels
 
                 if (isDataLoaded)
                 {
-                    Results.Add(parkrunData);
+                    Data.Add(parkrunData);
                     UpdateChart();
                 }
                 else
                 {
                     pendingEntries.Add(parkrunData);        // Speichere das neue Element temporär, so dass es nach dem Laden der Daten von der Datenbank in der "LoadDataAsync" hinzugefügt wird.
                 }
-
             });
-            RemoveResultCommand = new Command<ParkrunData>(async (parkrunData) =>
+            RemoveDataCommand = new Command<ParkrunData>(async (parkrunData) =>
             {
                 if (parkrunData != null)
                 {
                     await databaseService.DeleteDataAsync(parkrunData);
-                    Results.Remove(parkrunData);
+                    Data.Remove(parkrunData);
                 }
                 UpdateChart();
             });
@@ -113,13 +112,14 @@ namespace Parkrun.MVVM.ViewModels
                 }
             });
         }
+
         /// <summary>
         /// Aktualisiert das Diagramm.
         /// </summary>
         private void UpdateChart()
         {
             List<ChartEntry> entries;
-            if (Results.Count == 0)
+            if (Data.Count == 0)
             {
                 entries = new List<ChartEntry>
                 {
@@ -128,8 +128,11 @@ namespace Parkrun.MVVM.ViewModels
             }
             else
             {
-                var maxTime = Results.Max(r => r.Time.TotalSeconds); // Höchster Wert bestimmen
-                entries = Results.Select((result, index) =>
+                // Liste nach Datum sortieren
+                Data = new ObservableCollection<ParkrunData>(Data.OrderBy(d => d.Date));
+
+                var maxTime = Data.Max(d => d.Time.TotalSeconds); // Höchster Wert bestimmen
+                entries = Data.Select((result, index) =>
                     new ChartEntry((float)(maxTime - result.Time.TotalSeconds))
                     {
                         Label = result.Date.ToShortDateString(),
@@ -137,7 +140,8 @@ namespace Parkrun.MVVM.ViewModels
                         Color = SKColor.Parse("#3498db") // Blaue Farbe für die Linie
                     }).ToList();
             }
-            //Testdaten
+
+            #region TestData
             ///
             //var entries = new List<ChartEntry>
             //{
@@ -147,6 +151,7 @@ namespace Parkrun.MVVM.ViewModels
             //    new ChartEntry(1000) { Label = "Fr", ValueLabel = "1000", Color = SKColor.Parse("#A020F0") },
             //    new ChartEntry(500) { Label = "Do", ValueLabel = "500", Color = SKColor.Parse("#FFD700") },
             //};
+            #endregion
 
             LineChart = new LineChart 
             { 
