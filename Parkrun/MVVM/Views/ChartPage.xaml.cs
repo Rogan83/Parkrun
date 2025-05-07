@@ -1,5 +1,7 @@
+﻿using Parkrun.MVVM.Helpers;
 using Parkrun.MVVM.ViewModels;
 using Parkrun.Services;
+using System.Diagnostics;
 
 namespace Parkrun.MVVM.Views;
 
@@ -11,15 +13,24 @@ public partial class ChartPage : ContentPage
         BindingContext = new ChartViewModel();
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
-        DatabaseService databaseService = new();
-
         base.OnAppearing();
+        LoadDataSync(); 
+    }
+
+    private void LoadDataSync()
+    {
         if (BindingContext is ChartViewModel chartViewModel)
         {
-            chartViewModel.Data = await databaseService.GetDataAsync();
-            chartViewModel.UpdateChart();
+            var data = DatabaseService.GetDataSync();
+            if (data != null)
+            {
+                chartViewModel.Data = data;
+                chartViewModel.UpdateChart();
+            }
         }
     }
+
+
 }

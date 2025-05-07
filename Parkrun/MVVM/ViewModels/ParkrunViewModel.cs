@@ -18,7 +18,7 @@ namespace Parkrun.MVVM.ViewModels
     public class ParkrunViewModel
     {
         #region Properties and Fields
-        DatabaseService databaseService = new();
+        //DatabaseService databaseService = new();
 
         public ObservableCollection<ParkrunData> Data { get; set; } = new();
         private List<ParkrunData> pendingEntries = new();
@@ -53,7 +53,7 @@ namespace Parkrun.MVVM.ViewModels
             isDataLoaded = false;
             Data.Clear();
 
-            var data = await databaseService.GetDataAsync();
+            var data = await DatabaseService.GetDataAsync();
             foreach (var item in data)
             {
                 Data.Add(item);
@@ -77,7 +77,7 @@ namespace Parkrun.MVVM.ViewModels
 
                 var parkrunData = new ParkrunData { Date = SelectedDate, Time = SelectedTime };
 
-                await databaseService.SaveDataAsync(parkrunData);
+                await DatabaseService.SaveDataAsync(parkrunData);
 
                 if (isDataLoaded)
                 {
@@ -92,7 +92,7 @@ namespace Parkrun.MVVM.ViewModels
             {
                 if (parkrunData != null)
                 {
-                    await databaseService.DeleteDataAsync(parkrunData);
+                    await DatabaseService.DeleteDataAsync(parkrunData);
                     Data.Remove(parkrunData);
                 }
             });
