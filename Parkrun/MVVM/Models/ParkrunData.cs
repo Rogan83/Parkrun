@@ -13,8 +13,8 @@ namespace Parkrun.MVVM.Models
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan Time { get; set; }
-        public string CourseName { get; set; } // Name der Laufstrecke
-        public double DistanceKm { get; set; } // Kilometeranzahl
+        public string CourseName { get; set; } = string.Empty;      // Name der Laufstrecke
+        public double DistanceKm { get; set; }                      // Länge der Strecke in Km
 
         public override string ToString()
         {
