@@ -4,37 +4,66 @@
              xmlns:local="clr-namespace:Parkrun.MVVM.ViewModels"
              x:Class="Parkrun.MVVM.Views.ParkrunPage"
              xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
-             Title="ParkrunPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to the Parkrun App!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             Title="Parkrun Übersicht">
+    <Grid RowDefinitions="auto, *" Padding="10" ColumnDefinitions="1*,1*,.5*" HorizontalOptions="Center" >
 
-        <DatePicker Date="{Binding SelectedDate}" Margin="20,0,20,20"/>
-        <StackLayout Orientation="Horizontal" Margin="20,0,20,20">
-            <Picker Title="Stunde" ItemsSource="{Binding Hours}" SelectedItem="{Binding SelectedHour}" />
-            <Picker Title="Minute" ItemsSource="{Binding Minutes}" SelectedItem="{Binding SelectedMinute}" />
-            <Picker Title="Sekunde" ItemsSource="{Binding Seconds}" SelectedItem="{Binding SelectedSecond}" />
-        </StackLayout>
+        <!-- Oberer Bereich für Datum und Zeitwahl -->
+        
+            <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="3" HorizontalOptions="Center">
+                <!-- Datum Auswahl -->
+                <VerticalStackLayout HorizontalOptions="Center" Grid.Column="0">
+                    <Label Text="Datum" VerticalOptions="Center" TextDecorations="Underline" FontAttributes="Bold"/>
+                    <DatePicker Date="{Binding SelectedDate}" VerticalOptions="Center" HeightRequest="50"/>
+                </VerticalStackLayout>
 
-        <Button Text="Ergebnis hinzufügen" Command="{Binding AddDataCommand}" Margin="20,0,20,20"/>
+                <!-- Zeit Auswahl -->
+                <HorizontalStackLayout HorizontalOptions="Center" Grid.Column="1">
+                    <VerticalStackLayout>
+                        <Label Text="Stunde" TextDecorations="Underline" FontAttributes="Bold"/>
+                        <Picker ItemsSource="{Binding Hours}" SelectedItem="{Binding SelectedHour}" WidthRequest="80" HeightRequest="50"/>
+                    </VerticalStackLayout>
 
-        <ScrollView HeightRequest="300">
-            <CollectionView ItemsSource="{Binding Data}" Margin="0,0,0,20">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid ColumnDefinitions="*,*,Auto">
-                            <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="0" Margin="10" />
-                            <Label Text="{Binding Time}" Grid.Column="1" Margin="10"/>
-                            <Button Text="✖" Command="{Binding Source={RelativeSource AncestorType={x:Type local:ParkrunViewModel}}, Path=RemoveDataCommand}" CommandParameter="{Binding}" Grid.Column="2" Margin="10"/>
-                        </Grid>
+                    <VerticalStackLayout>
+                        <Label Text="Minute" TextDecorations="Underline" FontAttributes="Bold"/>
+                        <Picker ItemsSource="{Binding Minutes}" SelectedItem="{Binding SelectedMinute}" WidthRequest="80" HeightRequest="50"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout>
+                        <Label Text="Sekunde" TextDecorations="Underline" FontAttributes="Bold"/>
+                        <Picker ItemsSource="{Binding Seconds}" SelectedItem="{Binding SelectedSecond}" WidthRequest="80" HeightRequest="50"/>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+                 <!--Daten hinzufügen Button--> 
+                <Button Text="+" Grid.Row="0"  Grid.Column="2"
+                    Command="{Binding AddDataCommand}" 
+                    HeightRequest="50" WidthRequest="50" 
+                    HorizontalOptions="Center" VerticalOptions="Center"/>
+
+        </HorizontalStackLayout>
+            
+            
+            <!-- Datenanzeige -->
+            <ScrollView Grid.Row="1" Margin="0,20,0,20" Grid.ColumnSpan="3">
+                <CollectionView ItemsSource="{Binding Data}"  Margin="0,0,0,10" Grid.ColumnSpan="3">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="1*,1*,1*" Margin="5">
+                                <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="0" Margin="10"/>
+                                <Label Text="{Binding Time}" Grid.Column="1" Margin="10"/>
+                                <Button Text="✖" Grid.Column="2" 
+                                                    WidthRequest="50" 
+                                                    HorizontalOptions="Start" Margin="0"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:ParkrunViewModel}}, Path=RemoveDataCommand}" 
+                                                    CommandParameter="{Binding}" />
+
+                            </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-            </CollectionView>
-        </ScrollView>
+                </CollectionView>
+            </ScrollView>
 
+        
 
-        <microcharts:ChartView Chart="{Binding LineChart}" HeightRequest="200"/>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

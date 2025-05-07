@@ -9,8 +9,13 @@
     Title="Parkrun">
 
     <ShellContent
-        Title="Home"
+        Title="Daten"
         ContentTemplate="{DataTemplate views:ParkrunPage}"
         Route="ParkrunPage" />
+
+    <ShellContent 
+        Title="Linien Diagramm"
+        ContentTemplate="{DataTemplate views:ChartPage}" 
+        Route="ChartPage" />
 
 </Shell>

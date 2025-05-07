@@ -13,6 +13,7 @@ using SkiaSharp; // Wird für die Grafiken benötigt
 using Parkrun.MVVM.Models;
 using PropertyChanged;
 using Parkrun.Services;
+using Parkrun.MVVM.Views;
 
 namespace Parkrun.MVVM.ViewModels
 {
@@ -45,6 +46,12 @@ namespace Parkrun.MVVM.ViewModels
 
         private bool isDataLoaded = false;
         #endregion
+
+        public Command OpenChartPageCommand => new Command(async () =>
+        {
+            await Shell.Current.GoToAsync("///ChartPage");
+        });
+
 
         public async Task LoadDataAsync()
         {
@@ -116,7 +123,7 @@ namespace Parkrun.MVVM.ViewModels
         /// <summary>
         /// Aktualisiert das Diagramm.
         /// </summary>
-        private void UpdateChart()
+        internal void UpdateChart()
         {
             List<ChartEntry> entries;
             if (Data.Count == 0)
@@ -173,8 +180,8 @@ namespace Parkrun.MVVM.ViewModels
             //};
             #endregion
 
-            LineChart = new LineChart 
-            { 
+            LineChart = new LineChart
+            {
                 Entries = entries,
                 LabelOrientation = Orientation.Horizontal,
                 ValueLabelOrientation = Orientation.Horizontal,
