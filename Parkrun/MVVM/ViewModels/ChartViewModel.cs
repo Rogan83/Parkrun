@@ -14,10 +14,10 @@ namespace Parkrun.MVVM.ViewModels
     [AddINotifyPropertyChangedInterface]
     internal class ChartViewModel
     {
-        public List<ParkrunData> Data { get; set; } = new List<ParkrunData>();
+        internal List<ParkrunData> Data { get; set; } = new List<ParkrunData>();
         public Chart LineChart { get; private set; }
 
-        internal ChartViewModel()
+        public ChartViewModel()
         {
             LineChart = new LineChart();
         }

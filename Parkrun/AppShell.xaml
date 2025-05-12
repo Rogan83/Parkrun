@@ -18,9 +18,4 @@
         ContentTemplate="{DataTemplate views:ChartPage}" 
         Route="ChartPage" />
 
-    <!--<ShellContent 
-        Title="Laufanalyse"
-        ContentTemplate="{DataTemplate views:ChartPage}" 
-        Route="Laufanalyse" />-->
-
 </Shell>

@@ -31,4 +31,6 @@ public partial class ChartPage : ContentPage
             }
         }
     }
+
+
 }
