@@ -110,7 +110,5 @@ namespace Parkrun.MVVM.ViewModels
                 }
             });
         }
-
-        
     }
 }
