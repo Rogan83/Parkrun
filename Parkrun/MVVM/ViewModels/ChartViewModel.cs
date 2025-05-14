@@ -8,24 +8,46 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Parkrun.Services;
 
 namespace Parkrun.MVVM.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
     internal class ChartViewModel
     {
-        internal List<ParkrunData> Data { get; set; } = new List<ParkrunData>();
+        public List<ParkrunData> Data { get; set; } = new List<ParkrunData>();
         public Chart LineChart { get; private set; }
 
+        public int ChartWidth { get; set; }
+
+        bool isCompleteView = false;
+        public ICommand ToggleViewModus { get; set; }
         public ChartViewModel()
         {
             LineChart = new LineChart();
+
+            ToggleViewModus = new Command((parkrunData) =>
+            {
+                isCompleteView = !isCompleteView;
+                UpdateChartWidth(); // Breite aktualisieren
+            });
+
+            DeviceDisplay.Current.MainDisplayInfoChanged += OnDisplayChanged;
+
         }
+        void OnDisplayChanged(object sender, DisplayInfoChangedEventArgs e)
+        {
+            UpdateChartWidth(); // Aktualisiert die Breite dynamisch
+        }
+
+
+
 
         /// <summary>
         /// Aktualisiert das Diagramm.
         /// </summary>
-        internal void UpdateChart()
+        public void UpdateChart()
         {
             List<ChartEntry> entries;
             if (Data.Count == 0)
@@ -92,6 +114,26 @@ namespace Parkrun.MVVM.ViewModels
                 //MaxValue = 1000,  // Höchster Wert ein wenig über deinem höchsten Punkt setzen
                 //MinValue = 0   // Niedrigster Wert nahe deinem kleinsten Punkt setzen
             };
+        }
+
+        public void UpdateChartWidth()
+        {
+            double screenWidth = DeviceDisplay.Current.MainDisplayInfo.Width; // Bildschirmbreite in Pixel
+            double density = DeviceDisplay.Current.MainDisplayInfo.Density; // Pixeldichte
+
+            int adjustedWidth = (int)(screenWidth / density); // Berechnete Breite in DP
+
+            if (isCompleteView)
+            {
+                ChartWidth = adjustedWidth; // Maximale Breite für die vollständige Ansicht
+            }
+            else
+            {
+                int dataCount = Data.Count; // Anzahl der Datenpunkte
+
+                // Mindestbreite festlegen und je nach Datenzahl skalieren
+                ChartWidth = Math.Min(5000, Math.Max(300, dataCount * 50));  // Pro Datenpunkt 50 Pixel Breite
+            }
         }
     }
 }

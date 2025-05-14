@@ -73,9 +73,7 @@ namespace Parkrun.MVVM.ViewModels
         {
             AddDataCommand = new Command( async () =>
             {
-                Debug.WriteLine($"Neuer Eintrag: {SelectedDate} - {SelectedTime}");
-
-                var parkrunData = new ParkrunData { Date = SelectedDate, Time = SelectedTime };
+                var parkrunData = new ParkrunData { Date = SelectedDate, Time = SelectedTime, DistanceKm = 5 };
 
                 await DatabaseService.SaveDataAsync(parkrunData);
 
@@ -110,7 +108,5 @@ namespace Parkrun.MVVM.ViewModels
                 }
             });
         }
-
-        
     }
 }

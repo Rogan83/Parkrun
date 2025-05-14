@@ -48,7 +48,7 @@
                 <CollectionView ItemsSource="{Binding Data}"  Margin="0,0,0,10" Grid.ColumnSpan="3">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid ColumnDefinitions="1*,1*,1*" Margin="5">
+                            <Grid ColumnDefinitions="1*,1*,1*" Margin="5" >
                                 <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="0" Margin="10"/>
                                 <Label Text="{Binding Time}" Grid.Column="1" Margin="10"/>
                                 <Button Text="✖" Grid.Column="2" 

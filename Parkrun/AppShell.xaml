@@ -18,4 +18,9 @@
         ContentTemplate="{DataTemplate views:ChartPage}" 
         Route="ChartPage" />
 
+    <ShellContent 
+        Title="Laufanalyse"
+        ContentTemplate="{DataTemplate views:RunningAnalysisPage}" 
+        Route="Laufanalyse" />
+
 </Shell>

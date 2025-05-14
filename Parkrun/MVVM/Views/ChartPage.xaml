@@ -4,7 +4,22 @@
              x:Class="Parkrun.MVVM.Views.ChartPage"
              xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              Title="">
+
     <VerticalStackLayout>
-        <microcharts:ChartView Grid.Row="2" Chart="{Binding LineChart}" HeightRequest="300" Margin="0,10,0,0"/> 
+        <Grid ColumnDefinitions="*,*">
+            <Button
+                Text="Ansicht verändern"
+                Command="{Binding ToggleViewModus}"
+                />
+            
+        </Grid>
+        
+        <ScrollView Orientation="Horizontal">
+            <microcharts:ChartView Chart="{Binding LineChart}" HeightRequest="300" WidthRequest="{Binding ChartWidth}" Margin="0,10,0,0"/>
+        </ScrollView>
     </VerticalStackLayout>
+    
+    
+    
+
 </ContentPage>

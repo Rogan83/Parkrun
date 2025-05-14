@@ -28,9 +28,19 @@ public partial class ChartPage : ContentPage
             {
                 chartViewModel.Data = data;
                 chartViewModel.UpdateChart();
+                chartViewModel.UpdateChartWidth();
             }
         }
     }
 
+    //void OnPinchUpdated(object sender, PinchGestureUpdatedEventArgs e)
+    //{
+    //    if (e.Status == GestureStatus.Running)
+    //    {
+    //        var view = (View)sender;
+    //        double newScale = Math.Max(1, Math.Min(3, view.Scale * e.Scale)); // Zoom zwischen 1x und 3x begrenzen
+    //        view.Scale = newScale;
+    //    }
+    //}
 
 }
