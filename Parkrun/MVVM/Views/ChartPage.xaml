@@ -5,19 +5,35 @@
              xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              Title="">
 
-    <VerticalStackLayout>
-        <Grid ColumnDefinitions="*,*">
-            <Button
-                Text="Ansicht verändern"
-                Command="{Binding ToggleViewModus}"
-                />
+    <Grid RowDefinitions="auto,1*">
+        <Border Stroke="Black" StrokeThickness="2" Background="LightGray" Padding="10" HorizontalOptions="Center">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20"/>
+            </Border.StrokeShape>
+
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Grid.Row="0">
+                <Label 
+                    Text="{Binding IsCompleteLabelName}" 
+                    FontSize="Small"
+                    VerticalOptions="Center" 
+                    TextColor="DarkBlue"/>
+
+                <Button 
+                    Text="Ansicht wechseln" 
+                    FontSize="Small"
+                    Command="{Binding ToggleViewModus}" 
+                    Background="SteelBlue" 
+                    TextColor="White" />
+            </HorizontalStackLayout>
+        </Border>
+
+
+
+        <ScrollView Orientation="Horizontal" Grid.Row="1" Margin="10" >
             
-        </Grid>
-        
-        <ScrollView Orientation="Horizontal">
-            <microcharts:ChartView Chart="{Binding LineChart}" HeightRequest="300" WidthRequest="{Binding ChartWidth}" Margin="0,10,0,0"/>
+            <microcharts:ChartView Chart="{Binding LineChart}" HeightRequest="{Binding ChartHeight}" WidthRequest="{Binding ChartWidth}" Margin="0,10,0,0"/>
         </ScrollView>
-    </VerticalStackLayout>
+    </Grid>
     
     
     

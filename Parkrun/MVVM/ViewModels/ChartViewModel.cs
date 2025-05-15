@@ -20,8 +20,10 @@ namespace Parkrun.MVVM.ViewModels
         public Chart LineChart { get; private set; }
 
         public int ChartWidth { get; set; }
+        public int ChartHeight { get; set; }
 
         bool isCompleteView = false;
+        public string IsCompleteLabelName { get; set; } = "Detailansicht"; // Label für die Ansicht
         public ICommand ToggleViewModus { get; set; }
         public ChartViewModel()
         {
@@ -30,15 +32,19 @@ namespace Parkrun.MVVM.ViewModels
             ToggleViewModus = new Command((parkrunData) =>
             {
                 isCompleteView = !isCompleteView;
+                IsCompleteLabelName = isCompleteView ? "Vollansicht" : "Detailansicht";
+
                 UpdateChartWidth(); // Breite aktualisieren
+                UpdateChart();
             });
 
             DeviceDisplay.Current.MainDisplayInfoChanged += OnDisplayChanged;
 
         }
-        void OnDisplayChanged(object sender, DisplayInfoChangedEventArgs e)
+        void OnDisplayChanged(object? sender, DisplayInfoChangedEventArgs e)
         {
-            UpdateChartWidth(); // Aktualisiert die Breite dynamisch
+            UpdateChartWidth(); // Aktualisiert die Breite auch nach dem drehen des Bildschirms
+            UpdateChart();
         }
 
 
@@ -59,8 +65,8 @@ namespace Parkrun.MVVM.ViewModels
             }
             else
             {
-                // Liste nach Datum sortieren
-                //Data = new ObservableCollection<ParkrunData>(Data.OrderBy(d => d.Date));
+                string label = string.Empty;
+                string valueLabel = string.Empty;
                 Data = Data.OrderBy(d => d.Date).ToList();
 
                 var maxTime = Data.Max(d => d.Time.TotalSeconds); // Höchster Wert bestimmen
@@ -84,10 +90,16 @@ namespace Parkrun.MVVM.ViewModels
                         color = SKColor.Parse("#f1c40f"); // Gelb für normale Zeiten
                     }
 
+                    if (ChartWidth > 2000)
+                    {
+                        label = result.Date.ToShortDateString();
+                        valueLabel = $"{result.Time}";
+                    }
+
                     return new ChartEntry(calculatedValue)
                     {
-                        Label = result.Date.ToShortDateString(),
-                        ValueLabel = $"{result.Time}",
+                        Label = label,
+                        ValueLabel = valueLabel,
                         Color = color // Dynamische Farbänderung basierend auf der Bedingung
                     };
                 }).ToList();
@@ -118,10 +130,23 @@ namespace Parkrun.MVVM.ViewModels
 
         public void UpdateChartWidth()
         {
-            double screenWidth = DeviceDisplay.Current.MainDisplayInfo.Width; // Bildschirmbreite in Pixel
-            double density = DeviceDisplay.Current.MainDisplayInfo.Density; // Pixeldichte
+            int adjustedWidth = 0;
+            int dataPointWidth = 50;
 
-            int adjustedWidth = (int)(screenWidth / density); // Berechnete Breite in DP
+            int adjustedHeight = 0;
+
+            if (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                CalculateAdjustedDimensionsForSmartphone();
+                ChartHeight = (int)(adjustedHeight * 0.5f); // Höhe auf 70% des Bildschirms setzen
+            }
+            else if (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
+            {
+                CalculateAdjustedDimensionsForPC();
+                ChartHeight = (int)(adjustedHeight * 0.6f); // Höhe auf 70% des Bildschirms setzen
+
+                dataPointWidth = 150;
+            }
 
             if (isCompleteView)
             {
@@ -132,7 +157,38 @@ namespace Parkrun.MVVM.ViewModels
                 int dataCount = Data.Count; // Anzahl der Datenpunkte
 
                 // Mindestbreite festlegen und je nach Datenzahl skalieren
-                ChartWidth = Math.Min(5000, Math.Max(300, dataCount * 50));  // Pro Datenpunkt 50 Pixel Breite
+                ChartWidth = Math.Max(300, dataCount * dataPointWidth);  // Pro Datenpunkt 50 Pixel Breite
+            }
+
+
+            void CalculateAdjustedDimensionsForSmartphone()
+            {
+                double screenWidth = DeviceDisplay.Current.MainDisplayInfo.Width; // Bildschirmbreite in Pixel
+                double screenHeight = DeviceDisplay.Current.MainDisplayInfo.Height; // Bildschirmhöhe in Pixel
+                double density = DeviceDisplay.Current.MainDisplayInfo.Density; // Pixeldichte
+
+                adjustedWidth = (int)(screenWidth / density); // Berechnete Breite in DP
+                adjustedHeight = (int)(screenHeight / density); // Berechnete Höhe in DP
+            }
+
+            void CalculateAdjustedDimensionsForPC()
+            {
+                var width = Application.Current?.Windows.FirstOrDefault()?.Width;
+                if (width != null)
+                    adjustedWidth = (int)width; // Breite des aktuellen Fensters
+                else
+                    adjustedWidth = 1000;
+
+                var height = Application.Current?.Windows.FirstOrDefault()?.Height;
+
+                if (height != null)
+                {
+                    adjustedHeight = (int)height; // Höhe des aktuellen Fensters
+                }
+                else
+                {
+                    adjustedHeight = 250;
+                }
             }
         }
     }

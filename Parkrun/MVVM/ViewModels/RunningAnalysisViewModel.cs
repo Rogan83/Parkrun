@@ -16,6 +16,8 @@ namespace Parkrun.MVVM.ViewModels
 
         public ParkrunData SelectedRun { get; set; } = new ParkrunData();
 
+       
+
         private int parkrunIndex;
         public int ParkrunIndex
         {

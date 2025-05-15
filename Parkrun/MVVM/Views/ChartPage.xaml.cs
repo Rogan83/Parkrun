@@ -27,8 +27,8 @@ public partial class ChartPage : ContentPage
             if (data != null)
             {
                 chartViewModel.Data = data;
-                chartViewModel.UpdateChart();
                 chartViewModel.UpdateChartWidth();
+                chartViewModel.UpdateChart();
             }
         }
     }
