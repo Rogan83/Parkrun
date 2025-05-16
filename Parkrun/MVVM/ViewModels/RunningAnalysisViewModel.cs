@@ -30,7 +30,15 @@ namespace Parkrun.MVVM.ViewModels
         }
 
         public double KmH { get; set; } = 0;
+        public double MaxKmH { get; set; } = 0;
+        public double MinKmH { get; set; } = 0;
         public double MS { get; set; } = 0;
+        public double BestTimeMS { get; set; } = 0;
+
+        public int NumberOfRuns { get; set; }
+
+        public int BestTime { get; set; }
+        public int WorstTime { get; set; }
 
         public ICommand CreateAnalysis { get; }
 
@@ -38,18 +46,24 @@ namespace Parkrun.MVVM.ViewModels
         {
             CreateAnalysis = new Command(() =>
             {
-                KmH = (int)(SelectedRun.DistanceKm / SelectedRun.Time.TotalHours);
+                CalculateStatistics();
             });
         }
 
         public void CalculateStatistics()
         {
-            if (Data.Count > 0)
+            if (Data.Count > 0 && parkrunIndex < Data.Count)
             {
-                if (parkrunIndex < 0)
-                    parkrunIndex = 0;
-                KmH = (double)(Data[parkrunIndex].DistanceKm / Data[parkrunIndex].Time.TotalHours);
-                MS = (double)(Data[parkrunIndex].DistanceKm * 1000 / Data[parkrunIndex].Time.TotalSeconds);
+                KmH = Data[parkrunIndex].DistanceKm / Data[parkrunIndex].Time.TotalHours;
+                MS = Data[parkrunIndex].DistanceKm * 1000 / Data[parkrunIndex].Time.TotalSeconds;
+                NumberOfRuns = Data.Count;
+
+                BestTime = Data.Min(d => d.Time.Minutes);
+                WorstTime = Data.Max(d => d.Time.Minutes);
+
+                MaxKmH = Data.Max(d => d.DistanceKm / d.Time.TotalHours);
+                MinKmH = Data.Min(d => d.DistanceKm / d.Time.TotalHours);
+                BestTimeMS = Data.Min(d => d.DistanceKm * 1000 / d.Time.TotalSeconds);
             }
         }
     }

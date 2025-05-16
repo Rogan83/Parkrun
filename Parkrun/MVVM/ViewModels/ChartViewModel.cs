@@ -20,6 +20,7 @@ namespace Parkrun.MVVM.ViewModels
         public Chart LineChart { get; private set; }
 
         public int ChartWidth { get; set; }
+        int maxChartWidth = 0;               // Maximale Breite, die der Linechart haben darf, damit die Infos zu jeden Datenpunkt vollständig zu sehen sind.
         public int ChartHeight { get; set; }
 
         bool isCompleteView = false;
@@ -34,7 +35,7 @@ namespace Parkrun.MVVM.ViewModels
                 isCompleteView = !isCompleteView;
                 IsCompleteLabelName = isCompleteView ? "Vollansicht" : "Detailansicht";
 
-                UpdateChartWidth(); // Breite aktualisieren
+                UpdateChartDimensions(); // Breite aktualisieren
                 UpdateChart();
             });
 
@@ -43,11 +44,76 @@ namespace Parkrun.MVVM.ViewModels
         }
         void OnDisplayChanged(object? sender, DisplayInfoChangedEventArgs e)
         {
-            UpdateChartWidth(); // Aktualisiert die Breite auch nach dem drehen des Bildschirms
+            UpdateChartDimensions(); // Aktualisiert die Breite auch nach dem drehen des Bildschirms
             UpdateChart();
         }
 
+        int detailWidth = 0; // Breite der Detailansicht
+        public void UpdateChartDimensions()
+        {
+            int adjustedWidth = 0;
+            int dataPointWidth = 100;
 
+            int adjustedHeight = 0;
+
+            if (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                CalculateAdjustedDimensionsForSmartphone();
+                ChartHeight = (int)(adjustedHeight * 0.4f); // Höhe auf 70% des Bildschirms setzen
+            }
+            else if (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
+            {
+                CalculateAdjustedDimensionsForPC();
+                ChartHeight = (int)(adjustedHeight * 0.6f); // Höhe auf 70% des Bildschirms setzen
+
+                dataPointWidth = 150;
+            }
+            maxChartWidth = adjustedWidth;
+
+            if (isCompleteView)
+            {
+                ChartWidth = adjustedWidth; // Maximale Breite für die vollständige Ansicht
+            }
+            else
+            {
+                int dataCount = Data.Count; // Anzahl der Datenpunkte
+
+                detailWidth = dataCount * dataPointWidth;
+                // Mindestbreite festlegen und je nach Datenzahl skalieren
+                ChartWidth = Math.Max(adjustedWidth, detailWidth);  // Pro Datenpunkt 50 Pixel Breite
+            }
+
+
+            void CalculateAdjustedDimensionsForSmartphone()
+            {
+                double screenWidth = DeviceDisplay.Current.MainDisplayInfo.Width; // Bildschirmbreite in Pixel
+                double screenHeight = DeviceDisplay.Current.MainDisplayInfo.Height; // Bildschirmhöhe in Pixel
+                double density = DeviceDisplay.Current.MainDisplayInfo.Density; // Pixeldichte
+
+                adjustedWidth = (int)(screenWidth / density); // Berechnete Breite in DP
+                adjustedHeight = (int)(screenHeight / density); // Berechnete Höhe in DP
+            }
+
+            void CalculateAdjustedDimensionsForPC()
+            {
+                var width = Application.Current?.Windows.FirstOrDefault()?.Width;
+                if (width != null)
+                    adjustedWidth = (int)width; // Breite des aktuellen Fensters
+                else
+                    adjustedWidth = 1000;
+
+                var height = Application.Current?.Windows.FirstOrDefault()?.Height;
+
+                if (height != null)
+                {
+                    adjustedHeight = (int)height; // Höhe des aktuellen Fensters
+                }
+                else
+                {
+                    adjustedHeight = 250;
+                }
+            }
+        }
 
 
         /// <summary>
@@ -90,7 +156,7 @@ namespace Parkrun.MVVM.ViewModels
                         color = SKColor.Parse("#f1c40f"); // Gelb für normale Zeiten
                     }
 
-                    if (ChartWidth > 2000)
+                    if (!isCompleteView || detailWidth <= maxChartWidth)
                     {
                         label = result.Date.ToShortDateString();
                         valueLabel = $"{result.Time}";
@@ -128,68 +194,6 @@ namespace Parkrun.MVVM.ViewModels
             };
         }
 
-        public void UpdateChartWidth()
-        {
-            int adjustedWidth = 0;
-            int dataPointWidth = 50;
-
-            int adjustedHeight = 0;
-
-            if (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
-            {
-                CalculateAdjustedDimensionsForSmartphone();
-                ChartHeight = (int)(adjustedHeight * 0.5f); // Höhe auf 70% des Bildschirms setzen
-            }
-            else if (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
-            {
-                CalculateAdjustedDimensionsForPC();
-                ChartHeight = (int)(adjustedHeight * 0.6f); // Höhe auf 70% des Bildschirms setzen
-
-                dataPointWidth = 150;
-            }
-
-            if (isCompleteView)
-            {
-                ChartWidth = adjustedWidth; // Maximale Breite für die vollständige Ansicht
-            }
-            else
-            {
-                int dataCount = Data.Count; // Anzahl der Datenpunkte
-
-                // Mindestbreite festlegen und je nach Datenzahl skalieren
-                ChartWidth = Math.Max(300, dataCount * dataPointWidth);  // Pro Datenpunkt 50 Pixel Breite
-            }
-
-
-            void CalculateAdjustedDimensionsForSmartphone()
-            {
-                double screenWidth = DeviceDisplay.Current.MainDisplayInfo.Width; // Bildschirmbreite in Pixel
-                double screenHeight = DeviceDisplay.Current.MainDisplayInfo.Height; // Bildschirmhöhe in Pixel
-                double density = DeviceDisplay.Current.MainDisplayInfo.Density; // Pixeldichte
-
-                adjustedWidth = (int)(screenWidth / density); // Berechnete Breite in DP
-                adjustedHeight = (int)(screenHeight / density); // Berechnete Höhe in DP
-            }
-
-            void CalculateAdjustedDimensionsForPC()
-            {
-                var width = Application.Current?.Windows.FirstOrDefault()?.Width;
-                if (width != null)
-                    adjustedWidth = (int)width; // Breite des aktuellen Fensters
-                else
-                    adjustedWidth = 1000;
-
-                var height = Application.Current?.Windows.FirstOrDefault()?.Height;
-
-                if (height != null)
-                {
-                    adjustedHeight = (int)height; // Höhe des aktuellen Fensters
-                }
-                else
-                {
-                    adjustedHeight = 250;
-                }
-            }
-        }
+        
     }
 }

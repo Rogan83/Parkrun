@@ -27,7 +27,7 @@ public partial class ParkrunPage : ContentPage
             var data = DatabaseService.GetDataSync();
             if (data != null)
             {
-                parkrunViewModel.Data = new System.Collections.ObjectModel.ObservableCollection<ParkrunData>(data);
+                parkrunViewModel.Data = new System.Collections.ObjectModel.ObservableCollection<ParkrunData>(data.OrderBy(x => x.Date));
             }
         }
     }

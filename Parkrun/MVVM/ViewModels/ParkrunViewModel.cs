@@ -71,7 +71,7 @@ namespace Parkrun.MVVM.ViewModels
 
         public ParkrunViewModel()
         {
-            AddDataCommand = new Command( async () =>
+            AddDataCommand = new Command(async () =>
             {
                 var parkrunData = new ParkrunData { Date = SelectedDate, Time = SelectedTime, DistanceKm = 5 };
 
@@ -85,6 +85,8 @@ namespace Parkrun.MVVM.ViewModels
                 {
                     pendingEntries.Add(parkrunData);        // Speichere das neue Element temporär, so dass es nach dem Laden der Daten von der Datenbank in der "LoadDataAsync" hinzugefügt wird.
                 }
+
+                Data = new ObservableCollection<ParkrunData>(Data.OrderBy(d => d.Date));
             });
             RemoveDataCommand = new Command<ParkrunData>(async (parkrunData) =>
             {

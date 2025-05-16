@@ -27,15 +27,8 @@
             </HorizontalStackLayout>
         </Border>
 
-
-
         <ScrollView Orientation="Horizontal" Grid.Row="1" Margin="10" >
-            
             <microcharts:ChartView Chart="{Binding LineChart}" HeightRequest="{Binding ChartHeight}" WidthRequest="{Binding ChartWidth}" Margin="0,10,0,0"/>
         </ScrollView>
     </Grid>
-    
-    
-    
-
 </ContentPage>

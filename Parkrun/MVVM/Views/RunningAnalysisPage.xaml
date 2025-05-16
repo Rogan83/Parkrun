@@ -4,49 +4,116 @@
              x:Class="Parkrun.MVVM.Views.RunningAnalysisPage"
              Title="Lauf Analyse">
     <VerticalStackLayout>
+        <Label
+            Text="Wähle einen Lauf"
+            HorizontalOptions="Center"
+            TextDecorations="Underline"
+            FontSize="Large"
+            Margin="10"
+            />
         <Picker 
             HorizontalOptions="Center"
             Title="Wähle einen Lauf"
             ItemsSource="{Binding Data}" 
             SelectedItem="{Binding SelectedRun}" 
             SelectedIndex="{Binding ParkrunIndex, Mode=TwoWay}"
-            WidthRequest="400" 
-            HeightRequest="70">
+            HeightRequest="70"
+            BackgroundColor="DarkSlateGray"
+            >
         </Picker>
+        
+        
         <Grid 
-            ColumnDefinitions="auto,auto"
-            RowDefinitions="auto,auto"
+            ColumnDefinitions="auto,auto,auto"
+            RowDefinitions="auto,auto,auto,auto"
             HorizontalOptions="Center"
             Margin="10"
             >
-            <Label 
-                Grid.Row="0"
-                Grid.Column="0"
-                Text="Laufzeit in Km/h" 
-                FontAttributes="Bold" 
-                TextDecorations="Underline"
-                Margin="0,0,10,0"
-                />
-            <Label 
-                Grid.Row="1"
-                Grid.Column="0"
-                Text= "{Binding KmH, StringFormat='{0:F2}'}"
-                Margin="0,0,10,0"
-                />
-            <Label 
-                Grid.Column="1"
-                Grid.Row="0"   
-                Text="Laufzeit in m/s" 
-                FontAttributes="Bold" 
-                TextDecorations="Underline"
-                Margin="0,0,10,0"
-                />
-            <Label 
-                Grid.Column="1"
-                Grid.Row="1"
-                Text= "{Binding MS, StringFormat='{0:F2}'}"
-                Margin="0,0,10,0"
-                />
+            <VerticalStackLayout 
+                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" 
+                HorizontalOptions="Center">
+                <Label 
+                    Text="Ausgewählte Laufzeit in Km/h" 
+                    FontAttributes="Bold" 
+                    TextDecorations="Underline"
+                    />
+                <Label 
+                    Text= "{Binding KmH, StringFormat='{0:F2}'}"
+                    HorizontalOptions="Center"
+                    />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout 
+                Grid.Row="1" Grid.Column="0" Margin="5"
+                Grid.ColumnSpan="3" HorizontalOptions="Center">
+                <Label 
+                    Text="Anzahl gelaufener Strecken" 
+                    FontAttributes="Bold" 
+                    TextDecorations="Underline"
+                    HorizontalOptions="Center"
+                    />
+                <Label 
+                    Text= "{Binding NumberOfRuns}"
+                    HorizontalOptions="Center"
+                    />
+            </VerticalStackLayout>
+            
+            <VerticalStackLayout 
+                Grid.Row="2" Grid.Column="0" Margin="5">
+                <Label 
+                    Text="max km/h" 
+                    FontAttributes="Bold" 
+                    TextDecorations="Underline"
+                    HorizontalOptions="Center"
+                    />
+                <Label 
+                    Text= "{Binding MaxKmH, StringFormat='{0:F2}'}"
+                    HorizontalOptions="Center"
+                    />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout 
+                Grid.Row="2" Grid.Column="1" Margin="5">
+                 <Label 
+                    Text="min km/h" 
+                    FontAttributes="Bold" 
+                    TextDecorations="Underline"
+                    HorizontalOptions="Center"
+                    />
+                <Label 
+                    Text= "{Binding MinKmH, StringFormat='{0:F2}'}"
+                    HorizontalOptions="Center"
+                    />
+            </VerticalStackLayout>
+
+
+            <VerticalStackLayout 
+                Grid.Row="3" Grid.Column="0" Margin="5">
+                    <Label 
+                        Text="schnellste Zeit in Minuten" 
+                        FontAttributes="Bold" 
+                        TextDecorations="Underline"
+                        HorizontalOptions="Center"
+                    />
+                    <Label 
+                        Text= "{Binding BestTime, StringFormat='{0:F2}'}"
+                        HorizontalOptions="Center"
+                    />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout 
+                Grid.Row="3" Grid.Column="1" Margin="5">
+                    <Label 
+                        Text="langsamste Zeit in Minuten" 
+                        FontAttributes="Bold" 
+                        TextDecorations="Underline"
+                        HorizontalOptions="Center"
+                    />
+                    <Label 
+                        Text= "{Binding WorstTime, StringFormat='{0:F2}'}"
+                        HorizontalOptions="Center"
+                        />
+            </VerticalStackLayout>  
         </Grid>
         
     </VerticalStackLayout>
