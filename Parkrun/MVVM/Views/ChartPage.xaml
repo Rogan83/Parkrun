@@ -6,12 +6,13 @@
              Title="">
 
     <Grid RowDefinitions="auto,1*">
-        <Border Stroke="Black" StrokeThickness="2" Background="LightGray" Padding="10" HorizontalOptions="Center">
+        <Border Stroke="Black" StrokeThickness="2" Background="LightGray" Padding="10" HorizontalOptions="Center"
+                 IsVisible="{Binding IsToManyData}">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="20"/>
             </Border.StrokeShape>
 
-            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Grid.Row="0">
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Grid.Row="0" >
                 <Label 
                     Text="{Binding IsCompleteLabelName}" 
                     FontSize="Small"

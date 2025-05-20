@@ -13,12 +13,11 @@
             />
         <Picker 
             HorizontalOptions="Center"
-            Title="Wähle einen Lauf"
             ItemsSource="{Binding Data}" 
             SelectedItem="{Binding SelectedRun}" 
-            SelectedIndex="{Binding ParkrunIndex, Mode=TwoWay}"
+            SelectedIndex="{Binding ParkrunIndex}"
             HeightRequest="70"
-            BackgroundColor="DarkSlateGray"
+            BackgroundColor="SlateGray"
             >
         </Picker>
         
@@ -30,16 +29,20 @@
             Margin="10"
             >
             <VerticalStackLayout 
-                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" 
+                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="30" 
                 HorizontalOptions="Center">
                 <Label 
-                    Text="Ausgewählte Laufzeit in Km/h" 
+                    Text="Ausgewählte Laufzeit" 
                     FontAttributes="Bold" 
                     TextDecorations="Underline"
+                    TextColor="DarkRed"
+                    FontSize="Medium"
                     />
                 <Label 
-                    Text= "{Binding KmH, StringFormat='{0:F2}'}"
+                    Text= "{Binding KmH, StringFormat='{0:F2} Km/H'}"
                     HorizontalOptions="Center"
+                    TextColor="RosyBrown"
+                    FontSize="Medium"
                     />
             </VerticalStackLayout>
 
@@ -55,6 +58,7 @@
                 <Label 
                     Text= "{Binding NumberOfRuns}"
                     HorizontalOptions="Center"
+                    TextColor="SaddleBrown"
                     />
             </VerticalStackLayout>
             
@@ -69,6 +73,7 @@
                 <Label 
                     Text= "{Binding MaxKmH, StringFormat='{0:F2}'}"
                     HorizontalOptions="Center"
+                    TextColor="SaddleBrown"
                     />
             </VerticalStackLayout>
 
@@ -83,6 +88,7 @@
                 <Label 
                     Text= "{Binding MinKmH, StringFormat='{0:F2}'}"
                     HorizontalOptions="Center"
+                    TextColor="SaddleBrown"
                     />
             </VerticalStackLayout>
 
@@ -90,29 +96,55 @@
             <VerticalStackLayout 
                 Grid.Row="3" Grid.Column="0" Margin="5">
                     <Label 
-                        Text="schnellste Zeit in Minuten" 
+                        Text="schnellste Zeit" 
                         FontAttributes="Bold" 
                         TextDecorations="Underline"
                         HorizontalOptions="Center"
                     />
+                <HorizontalStackLayout HorizontalOptions="Center">
                     <Label 
-                        Text= "{Binding BestTime, StringFormat='{0:F2}'}"
+                        Text= "{Binding BestTimeInHours, StringFormat='{0:00}:'}"
                         HorizontalOptions="Center"
+                        TextColor="SaddleBrown"
                     />
+                    <Label 
+                        Text= "{Binding BestTimeInMinutes, StringFormat='{0:00}:'}"
+                        HorizontalOptions="Center"
+                        TextColor="SaddleBrown"
+                    />
+                    <Label 
+                        Text= "{Binding BestTimeInSeconds, StringFormat='{0:00}'}"
+                        HorizontalOptions="Center"
+                        TextColor="SaddleBrown"
+                    />
+                </HorizontalStackLayout>
             </VerticalStackLayout>
 
             <VerticalStackLayout 
                 Grid.Row="3" Grid.Column="1" Margin="5">
                     <Label 
-                        Text="langsamste Zeit in Minuten" 
+                        Text="langsamste Zeit" 
                         FontAttributes="Bold" 
                         TextDecorations="Underline"
                         HorizontalOptions="Center"
                     />
+                <HorizontalStackLayout HorizontalOptions="Center">
                     <Label 
-                        Text= "{Binding WorstTime, StringFormat='{0:F2}'}"
+                        Text= "{Binding WorstTimeInHours, StringFormat='{0:00}:'}"
                         HorizontalOptions="Center"
-                        />
+                        TextColor="SaddleBrown"
+                    />
+                    <Label 
+                        Text= "{Binding WorstTimeInMinutes, StringFormat='{0:00}:'}"
+                        HorizontalOptions="Center"
+                        TextColor="SaddleBrown"
+                    />
+                    <Label 
+                        Text= "{Binding WorstTimeInSeconds, StringFormat='{0:00}'}"
+                        HorizontalOptions="Center"
+                        TextColor="SaddleBrown"
+                    />
+                </HorizontalStackLayout>
             </VerticalStackLayout>  
         </Grid>
         

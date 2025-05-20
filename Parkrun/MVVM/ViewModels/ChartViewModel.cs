@@ -23,7 +23,8 @@ namespace Parkrun.MVVM.ViewModels
         int maxChartWidth = 0;               // Maximale Breite, die der Linechart haben darf, damit die Infos zu jeden Datenpunkt vollständig zu sehen sind.
         public int ChartHeight { get; set; }
 
-        bool isCompleteView = false;
+        public bool IsToManyData { get; set; }  // Wenn zu viele Daten vorhanden sind, dann gibt es die Möglichkeit zwischen einer kompakten und einer detaillierten Ansicht zu wechseln.
+        bool isCompactView = false;
         public string IsCompleteLabelName { get; set; } = "Detailansicht"; // Label für die Ansicht
         public ICommand ToggleViewModus { get; set; }
         public ChartViewModel()
@@ -32,8 +33,8 @@ namespace Parkrun.MVVM.ViewModels
 
             ToggleViewModus = new Command((parkrunData) =>
             {
-                isCompleteView = !isCompleteView;
-                IsCompleteLabelName = isCompleteView ? "Vollansicht" : "Detailansicht";
+                isCompactView = !isCompactView;
+                IsCompleteLabelName = isCompactView ? "Kompaktansicht" : "Detailansicht";
 
                 UpdateChartDimensions(); // Breite aktualisieren
                 UpdateChart();
@@ -42,13 +43,14 @@ namespace Parkrun.MVVM.ViewModels
             DeviceDisplay.Current.MainDisplayInfoChanged += OnDisplayChanged;
 
         }
+        //Wird ausgerufen, wenn das DisplayInfo sich ändert, z.B. bei der Drehung des Bildschirms
         void OnDisplayChanged(object? sender, DisplayInfoChangedEventArgs e)
         {
             UpdateChartDimensions(); // Aktualisiert die Breite auch nach dem drehen des Bildschirms
             UpdateChart();
         }
 
-        int detailWidth = 0; // Breite der Detailansicht
+        int expandedChartWidth = 0; // Breite der Detailansicht
         public void UpdateChartDimensions()
         {
             int adjustedWidth = 0;
@@ -68,21 +70,24 @@ namespace Parkrun.MVVM.ViewModels
 
                 dataPointWidth = 150;
             }
-            maxChartWidth = adjustedWidth;
+            maxChartWidth = adjustedWidth;  // Maximale Breite, die der Linechart haben darf, damit alle Infos zu jeden Datenpunkt vollständig auf eine Seite zu sehen sind für die kompakte Ansicht.
 
-            if (isCompleteView)
+            expandedChartWidth = Data.Count * dataPointWidth;   // Die Gesamtbreite des Diagramms, welches mit einem horizontalen Balken angeschaut werden kann, wird anhand der Anzahl der Datenpunkte und der Breite pro Datenpunkt berechnet.
+
+            if (isCompactView)    
             {
                 ChartWidth = adjustedWidth; // Maximale Breite für die vollständige Ansicht
             }
             else
             {
-                int dataCount = Data.Count; // Anzahl der Datenpunkte
-
-                detailWidth = dataCount * dataPointWidth;
                 // Mindestbreite festlegen und je nach Datenzahl skalieren
-                ChartWidth = Math.Max(adjustedWidth, detailWidth);  // Pro Datenpunkt 50 Pixel Breite
+                ChartWidth = Math.Max(adjustedWidth, expandedChartWidth);  // Pro Datenpunkt 50 Pixel Breite
             }
 
+            // Wenn die Anzahl der Datenpunkte und die daraus resultierende Gesamtbreite für das Liniendiagramm zu hoch ist,
+            // dann wird der Button sichtbar, wo man in einer kompakten Ansicht wechseln kann,
+            // wo aber kein Datenpunkt mehr beschriftet ist.
+            IsToManyData = expandedChartWidth > maxChartWidth ? true : false;
 
             void CalculateAdjustedDimensionsForSmartphone()
             {
@@ -155,8 +160,8 @@ namespace Parkrun.MVVM.ViewModels
                     {
                         color = SKColor.Parse("#f1c40f"); // Gelb für normale Zeiten
                     }
-
-                    if (!isCompleteView || detailWidth <= maxChartWidth)
+                    // Wenn die Detailansicht aktiv ist oder die Breite von der kompletten Ansicht kleiner als die maximale Breite ist, dann wird das Datum und die Zeit angezeigt
+                    if (!isCompactView || expandedChartWidth <= maxChartWidth)
                     {
                         label = result.Date.ToShortDateString();
                         valueLabel = $"{result.Time}";
