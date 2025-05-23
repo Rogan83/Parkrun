@@ -1,6 +1,8 @@
 ﻿using Parkrun.MVVM.Helpers;
+using Parkrun.MVVM.Models;
 using Parkrun.MVVM.ViewModels;
 using Parkrun.Services;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace Parkrun.MVVM.Views;
@@ -26,7 +28,14 @@ public partial class ChartPage : ContentPage
             var data = DatabaseService.GetDataSync();
             if (data != null)
             {
-                chartViewModel.Data = data;
+                string parkrunnerName = string.Empty;
+                if (Preferences.Get("ParkrunnerName", string.Empty) != string.Empty)
+                {
+                    parkrunnerName = Preferences.Get("ParkrunnerName", string.Empty);
+                }
+                var filteredData = data.Where(x => x.Name.ToLower() == parkrunnerName);
+
+                chartViewModel.Data = new ObservableCollection<ParkrunData>(filteredData).ToList();
                 chartViewModel.UpdateChartDimensions();
                 chartViewModel.UpdateChart();
             }

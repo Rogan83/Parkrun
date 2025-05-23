@@ -61,12 +61,12 @@ namespace Parkrun.MVVM.ViewModels
             if (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
             {
                 CalculateAdjustedDimensionsForSmartphone();
-                ChartHeight = (int)(adjustedHeight * 0.4f); // Höhe auf 70% des Bildschirms setzen
+                ChartHeight = (int)(adjustedHeight * 0.5f); 
             }
             else if (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
             {
                 CalculateAdjustedDimensionsForPC();
-                ChartHeight = (int)(adjustedHeight * 0.6f); // Höhe auf 70% des Bildschirms setzen
+                ChartHeight = (int)(adjustedHeight * 0.6f); 
 
                 dataPointWidth = 150;
             }
@@ -193,6 +193,7 @@ namespace Parkrun.MVVM.ViewModels
                 Entries = entries,
                 LabelOrientation = Orientation.Horizontal,
                 ValueLabelOrientation = Orientation.Horizontal,
+                LabelTextSize = 30,
 
                 //MaxValue = 1000,  // Höchster Wert ein wenig über deinem höchsten Punkt setzen
                 //MinValue = 0   // Niedrigster Wert nahe deinem kleinsten Punkt setzen

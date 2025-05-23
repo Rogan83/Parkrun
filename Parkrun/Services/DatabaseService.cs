@@ -41,5 +41,10 @@ namespace Parkrun.Services
         {
              return database.DeleteAsync(data);
         }
+
+        public static Task<int> DeleteAllDataAsync()
+        {
+            return database.DeleteAllAsync<ParkrunData>();
+        }
     }
 }

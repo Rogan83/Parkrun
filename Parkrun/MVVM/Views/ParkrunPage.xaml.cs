@@ -27,7 +27,10 @@ public partial class ParkrunPage : ContentPage
             var data = DatabaseService.GetDataSync();
             if (data != null)
             {
-                parkrunViewModel.Data = new System.Collections.ObjectModel.ObservableCollection<ParkrunData>(data.OrderBy(x => x.Date));
+                // Filtere die Daten basierend auf dem Namen des Parkrunners, welche nach dem Datum sortiert wurden
+                var filteredData = data.Where(x => x.Name.ToLower() == parkrunViewModel.ParkrunnerName).OrderBy(x => x.Date);
+
+                parkrunViewModel.Data = new System.Collections.ObjectModel.ObservableCollection<ParkrunData>(filteredData);
             }
         }
     }
